@@ -83,6 +83,18 @@ class User < ApplicationRecord
     following.include?(other_user)
   end
 
+  def password_reset_expired? 
+    reset_sent_at < 2.hours.ago
+  end
+
+  def feed 
+    Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id)
+  end
+
+  def follow(other_user)
+    following << other_user
+  end
+
   private
 
   def downcase_email
